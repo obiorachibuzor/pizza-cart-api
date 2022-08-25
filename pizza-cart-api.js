@@ -68,8 +68,8 @@ document.addEventListener('alpine:init', () => {
 
 
 
-      message: 'People dissapoint Pizza doesnt ',
-      username: 'Hlananani',
+      message: 'AFFORDABLE PIZZAS ',
+      username: 'Obiora',
       pizzas: [],
       cartId: '',
       cart: { total: 0 },
@@ -91,7 +91,7 @@ document.addEventListener('alpine:init', () => {
         axios
           .post('https://pizza-cart-api.herokuapp.com/api/pizza-cart/add', params)
           .then(() => {
-            this.message = "Pizza added to the cart"
+            this.message = "You ordered pizza added to the cart"
             this.showCart();
 
           })
@@ -125,10 +125,10 @@ document.addEventListener('alpine:init', () => {
           .post('https://pizza-cart-api.herokuapp.com/api/pizza-cart/pay', params)
           .then(() => {
             if (!this.paymentAmount) {
-              this.paymentMessage = 'No amount entered!'
+              this.paymentMessage = 'No amount entered, Check Cart Total!'
             }
             else if (this.paymentAmount >= this.cart.total) {
-              this.paymentMessage = 'Payment Sucessful!'
+              this.paymentMessage = 'Payment Sucessful, Enjoy Your Pizza!'
               this.message = this.username + " Paid!"
               setTimeout(() => {
                 this.cart.total = '';
@@ -142,7 +142,7 @@ document.addEventListener('alpine:init', () => {
               }, 2000);
 
             } else {
-              this.paymentMessage = 'Sorry - that is not enough money!'
+              this.paymentMessage = 'Insufficient fund!'
               setTimeout(() => {
                 this.cart.total = ''
               }, 2000);
