@@ -15,41 +15,41 @@ document.addEventListener('alpine:init', () => {
             return this.createCart();
 
           })
-          .then((result)=> {
+          .then((result) => {
             console.log(result.data);
             this.cartId = result.data.cart_code;
           });
       },
-      createCart(){
+      createCart() {
         ///api/pizza-cart/create
         return axios
-            .get('https://pizza-cart-api.herokuapp.com/api/pizza-cart/create?username=' + this.username)
+          .get('https://pizza-cart-api.herokuapp.com/api/pizza-cart/create?username=' + this.username)
       },
-      showCart(){
+      showCart() {
         const url = `https://pizza-cart-api.herokuapp.com/api/pizza-cart/${this.cartId}/get`;
-         axios
-             .get(url)
-             .then( (result)=>{
-              this.cart = result.data;
-             });
+        axios
+          .get(url)
+          .then((result) => {
+            this.cart = result.data;
+          });
       },
-      featuredPizzas(){
+      featuredPizzas() {
         //Get a list of featured pizzas
         return axios
-            .get('https://pizza-cart-api.herokuapp.com/api/pizzas/featured')
+          .get('https://pizza-cart-api.herokuapp.com/api/pizzas/featured')
       },
-      postfeaturedPizzas(){
+      postfeaturedPizzas() {
         //Get a list of featured pizzas
         return axios
-            .post('https://pizza-cart-api.herokuapp.com/api/pizzas/featured')
-            .then(()=>{
-              
-              for (let i = 0; i < 4; i++) {
-                return !this.postfeaturedPizzas();
-              }
-              
-            })
-      }, 
+          .post('https://pizza-cart-api.herokuapp.com/api/pizzas/featured')
+          .then(() => {
+
+            for (let i = 0; i < 4; i++) {
+              return !this.postfeaturedPizzas();
+            }
+
+          })
+      },
       //  ActiveUser(){
       //   const url = 'https://pizza-cart-api.herokuapp.com/api/pizza-cart/username/:username/active';
       //    axios
@@ -63,19 +63,20 @@ document.addEventListener('alpine:init', () => {
         return `./img/${pizza.size}.png`
       },
 
-     
-            
- 
 
 
-      message: 'PIZZAS',     
-      username:'Obiora',
+
+
+
+      message: 'People dissapoint Pizza doesnt ',
+      username: 'Hlananani',
       pizzas: [],
       cartId: '',
-      cart: {total : 0 }, 
-      paymentMessage:'',
+      cart: { total: 0 },
+      paymentMessage: '',
       payNow: false,
       paymentAmount: 0,
+      show: false,
 
 
 
@@ -90,63 +91,70 @@ document.addEventListener('alpine:init', () => {
         axios
           .post('https://pizza-cart-api.herokuapp.com/api/pizza-cart/add', params)
           .then(() => {
-            this.message = "Pizza ordered"
-            this.showCart() ;
+            this.message = "Pizza added to the cart"
+            this.showCart();
 
-            })
-           
+          })
+
           .catch(err => alert(err));
         // alert(pizza.id)  
       },
-      remove(pizza){
+      remove(pizza) {
         // /api/pizza-cart/remove
         const params = {
-          cart_code : this.cartId,
-          pizza_id : pizza.id
+          cart_code: this.cartId,
+          pizza_id: pizza.id
         }
 
         axios
           .post('https://pizza-cart-api.herokuapp.com/api/pizza-cart/remove', params)
-          .then(()=>{
-            this.message= "Pizza dropped from the cart"
+          .then(() => {
+            this.message = "pizza removed from the cart"
             this.showCart();
           })
-          .catch(err=>alert(err));
+          .catch(err => alert(err));
 
       },
-      pay(pizza){
+      pay(pizza) {
         const params = {
-          cart_code : this.cartId,
-        
+          cart_code: this.cartId,
+
         }
 
         axios
           .post('https://pizza-cart-api.herokuapp.com/api/pizza-cart/pay', params)
-          .then(()=>{
-              if(!this.paymentAmount){
-                  this.paymentMessage = 'No Amount. Enter Cart Total, Please!'
-              }
-              else if(this.paymentAmount >= this.cart.total.toFixed(2)){
-                  this.paymentMessage = 'Payment Sucessful!'
-                  this.message= this.username  +" Paid!"
-                  setTimeout(() => {
-                      this.cart.total = ''
-                  }, 7000);
-  
-              }else{
-                  this.paymentMessage = 'Insufficient fund!'
-                  setTimeout(() => {
-                      this.cart.total = ''
-                  }, 4000);
-              }
-          
-          })
-          .catch(err=>alert(err));
-            
-      },
-    
-    }
-      
+          .then(() => {
+            if (!this.paymentAmount) {
+              this.paymentMessage = 'No amount entered!'
+            }
+            else if (this.paymentAmount >= this.cart.total) {
+              this.paymentMessage = 'Payment Sucessful!'
+              this.message = this.username + " Paid!"
+              setTimeout(() => {
+                this.cart.total = '';
+                this.cart.total = 0;
+                this.paymentMessage = '';
+                this.paymentAmount = 0;
+                this.message = '';
+                window.location.reload()
 
-    })
-  });
+
+              }, 2000);
+
+            } else {
+              this.paymentMessage = 'Sorry - that is not enough money!'
+              setTimeout(() => {
+                this.cart.total = ''
+              }, 2000);
+            }
+
+          })
+          .catch(err => alert(err));
+
+      },
+
+    }
+
+
+  })
+});
